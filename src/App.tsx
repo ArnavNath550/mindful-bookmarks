@@ -1,7 +1,8 @@
 import * as React from "react";
+import Index from "./components/Index";
 
 const App: React.FC = () => {
-  return <span>App</span>;
+  return <Index />;
 };
 
 export default App;
