@@ -124,7 +124,7 @@ const StyledContentText = styled(motion.div)`
     gap: 6px;
     font-family: var(--secondaryFont, "Georgia", serif);
     font-style: italic;
-    color: var(--accentColor, #5a5a5a);
+    color: var(--accent, #5a5a5a);
 
     .icon-wrapper {
       display: inline-flex;
