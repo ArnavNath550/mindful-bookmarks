@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import NavBar from "./NavBar";
+import ImageTransition from "./ImageTransition";
 
 const Index: React.FC = () => {
   const text =
@@ -10,10 +11,15 @@ const Index: React.FC = () => {
   const words = text.split(/(\s+)/).filter(Boolean);
 
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, scale: 0.95 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.06 },
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+        staggerChildren: 0.06,
+      },
     },
   };
 
@@ -35,7 +41,6 @@ const Index: React.FC = () => {
     },
   };
 
-  // Choose the correct icon for each italic word
   const getIconForWord = (word: string): string | null => {
     const lower = word.toLowerCase();
     if (lower.includes("bookmark")) return "/bookmark.svg";
@@ -44,46 +49,55 @@ const Index: React.FC = () => {
     return null;
   };
 
+  const [loading, setLoading] = React.useState(true);
+
   return (
-    <StyledContainer>
-      <NavBar />
-      <StyledContent>
-        <StyledContentText
+    <div style={{ width: "100%", height: "100%" }}>
+      {loading ? (
+        <ImageTransition onFinished={() => setLoading(false)} />
+      ) : (
+        <StyledContainer
           as={motion.div}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          {words.map((word, i) => {
-            const isItalic = word.includes("<i>");
-            if (isItalic) {
-              const inner = word.replace(/<\/?i>/g, "");
-              const iconSrc = getIconForWord(inner);
+          <NavBar />
 
-              return (
-                <motion.i key={i} variants={wordVariants}>
-                  {iconSrc && (
-                    <motion.span
-                      className="icon-wrapper"
-                      variants={iconVariants}
-                    >
-                      <img src={iconSrc} alt={`${inner} icon`} />
-                    </motion.span>
-                  )}
-                  {inner}
-                </motion.i>
-              );
-            }
+          <StyledContent>
+            <StyledContentText>
+              {words.map((word, i) => {
+                const isItalic = word.includes("<i>");
+                if (isItalic) {
+                  const inner = word.replace(/<\/?i>/g, "");
+                  const iconSrc = getIconForWord(inner);
 
-            return (
-              <motion.span key={i} variants={wordVariants}>
-                {word}
-              </motion.span>
-            );
-          })}
-        </StyledContentText>
-      </StyledContent>
-    </StyledContainer>
+                  return (
+                    <motion.i key={i} variants={wordVariants}>
+                      {iconSrc && (
+                        <motion.span
+                          className="icon-wrapper"
+                          variants={iconVariants}
+                        >
+                          <img src={iconSrc} alt={`${inner} icon`} />
+                        </motion.span>
+                      )}
+                      {inner}
+                    </motion.i>
+                  );
+                }
+
+                return (
+                  <motion.span key={i} variants={wordVariants}>
+                    {word}
+                  </motion.span>
+                );
+              })}
+            </StyledContentText>
+          </StyledContent>
+        </StyledContainer>
+      )}
+    </div>
   );
 };
 
@@ -133,7 +147,6 @@ const StyledContentText = styled(motion.div)`
       width: 20px;
       height: 20px;
       flex-shrink: 0;
-      transform-origin: center;
 
       img {
         height: 20px;
