@@ -87,10 +87,10 @@ const containerVariants = {
     },
   },
   exit: {
-    scale: 0.5,
+    scale: 0.8,
     opacity: 0,
     transition: {
-      duration: 1.6, // slower exit
+      duration: 1, // slower exit
       ease: "easeInOut",
     },
   },

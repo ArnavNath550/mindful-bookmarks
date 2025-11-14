@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import NavBar from "./NavBar";
 import ImageTransition from "./ImageTransition";
+import LoginPage from "../pages/LoginPage";
 
 const Index: React.FC = () => {
   const [pageContext, setPageContext] = React.useState("INDEX");
@@ -130,7 +131,7 @@ const Index: React.FC = () => {
             </StyledContentText>
           </StyledContent>
 
-          {pageContext === "LOGIN" && <span>Login Page</span>}
+          {pageContext === "LOGIN" && <LoginPage />}
         </StyledContainer>
       )}
     </div>
@@ -172,7 +173,7 @@ const StyledContentText = styled(motion.div)`
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--secondaryFont, "Georgia", serif);
+    font-family: var(--secondaryFont, serif);
     font-style: italic;
     color: var(--accent, #5a5a5a);
 
