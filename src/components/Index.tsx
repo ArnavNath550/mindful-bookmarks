@@ -1,12 +1,16 @@
 import * as React from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import NavBar from "./NavBar";
 import ImageTransition from "./ImageTransition";
 
 const Index: React.FC = () => {
-  const text =
-    "mindful, is a <i>bookmarking</i> tool.. that was built so I have a place to store my <i>inspiration</i>, and my <i>hyperlinks</i>.";
+  const [pageContext, setPageContext] = React.useState("INDEX");
+  const [text, setText] = React.useState(
+    "mindful, is a <i>bookmarking</i> tool.. that was built so I have a place to store my <i>inspiration</i>, and my <i>hyperlinks</i>.",
+  );
+
+  const [loading, setLoading] = React.useState(true);
 
   const words = text.split(/(\s+)/).filter(Boolean);
 
@@ -24,11 +28,18 @@ const Index: React.FC = () => {
   };
 
   const wordVariants = {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, y: 10, filter: "blur(10px)" },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.4, ease: "easeOut" },
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+    exit: {
+      opacity: 0,
+      y: -10,
+      filter: "blur(6px)",
+      transition: { duration: 0.4, ease: "easeIn" },
     },
   };
 
@@ -49,7 +60,16 @@ const Index: React.FC = () => {
     return null;
   };
 
-  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    if (pageContext === "LOGIN") {
+      // Keep only "mindful", others fade/blur out
+      setText("mindful,");
+    } else {
+      setText(
+        "mindful, is a <i>bookmarking</i> tool.. that was built so I have a place to store my <i>inspiration</i>, and my <i>hyperlinks</i>.",
+      );
+    }
+  }, [pageContext]);
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
@@ -62,39 +82,55 @@ const Index: React.FC = () => {
           initial="hidden"
           animate="visible"
         >
-          <NavBar />
+          <NavBar setPageContext={setPageContext} pageContext={pageContext} />
 
           <StyledContent>
             <StyledContentText>
-              {words.map((word, i) => {
-                const isItalic = word.includes("<i>");
-                if (isItalic) {
-                  const inner = word.replace(/<\/?i>/g, "");
-                  const iconSrc = getIconForWord(inner);
+              <AnimatePresence>
+                {words.map((word, i) => {
+                  const isItalic = word.includes("<i>");
+                  if (isItalic) {
+                    const inner = word.replace(/<\/?i>/g, "");
+                    const iconSrc = getIconForWord(inner);
+
+                    return (
+                      <motion.i
+                        key={i}
+                        variants={wordVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                      >
+                        {iconSrc && (
+                          <motion.span
+                            className="icon-wrapper"
+                            variants={iconVariants}
+                          >
+                            <img src={iconSrc} alt={`${inner} icon`} />
+                          </motion.span>
+                        )}
+                        {inner}
+                      </motion.i>
+                    );
+                  }
 
                   return (
-                    <motion.i key={i} variants={wordVariants}>
-                      {iconSrc && (
-                        <motion.span
-                          className="icon-wrapper"
-                          variants={iconVariants}
-                        >
-                          <img src={iconSrc} alt={`${inner} icon`} />
-                        </motion.span>
-                      )}
-                      {inner}
-                    </motion.i>
+                    <motion.span
+                      key={i}
+                      variants={wordVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                    >
+                      {word}
+                    </motion.span>
                   );
-                }
-
-                return (
-                  <motion.span key={i} variants={wordVariants}>
-                    {word}
-                  </motion.span>
-                );
-              })}
+                })}
+              </AnimatePresence>
             </StyledContentText>
           </StyledContent>
+
+          {pageContext === "LOGIN" && <span>Login Page</span>}
         </StyledContainer>
       )}
     </div>

@@ -8,11 +8,11 @@ interface Props {
 
 const ImageTransition: React.FC<Props> = ({ onFinished }) => {
   const images = [
-    "image #01",
-    "image #02",
-    "image #03",
-    "image #04",
-    "image #05",
+    "/public/images/artwork/artwork-one.jpg",
+    "/public/images/artwork/artwork-two.jpg",
+    "/public/images/artwork/artwork-three.jpg",
+    "/public/images/artwork/artwork-four.jpg",
+    "/public/images/artwork/artwork-five.jpg",
   ];
 
   // Single controls for the container
@@ -24,7 +24,7 @@ const ImageTransition: React.FC<Props> = ({ onFinished }) => {
       await containerControls.start("show");
 
       // Wait 0.5s after entrance
-      await new Promise((res) => setTimeout(res, 500));
+      await new Promise((res) => setTimeout(res, 750)); // wait 1s instead of 0.5s
 
       // Start exit
       await containerControls.start("exit");
@@ -43,9 +43,7 @@ const ImageTransition: React.FC<Props> = ({ onFinished }) => {
       animate={containerControls} // single controls handle both entrance & exit
     >
       {images.map((text, i) => (
-        <Image key={i} variants={imageVariants}>
-          {text}
-        </Image>
+        <Image src={text} key={i} variants={imageVariants} />
       ))}
     </Container>
   );
@@ -65,19 +63,18 @@ const Container = styled(motion.div)`
   perspective: 900px;
 `;
 
-const Image = styled(motion.div)`
+const Image = styled(motion.img)`
   background-color: #ccc;
-  width: 170px;
-  height: 200px;
+  width: 220px;
+  height: 280px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
+  object-fit: cover;
   transform-style: preserve-3d;
 `;
-
-/* -------------------- VARIANTS -------------------- */
 
 const containerVariants = {
   hidden: { opacity: 1, scale: 1 },
@@ -85,15 +82,15 @@ const containerVariants = {
     opacity: 1,
     scale: 1,
     transition: {
-      staggerChildren: 0.2, // stagger each image by 0.2s
-      delayChildren: 0.1,
+      staggerChildren: 0.4, // slower stagger
+      delayChildren: 0.2, // longer delay before first image
     },
   },
   exit: {
     scale: 0.5,
     opacity: 0,
     transition: {
-      duration: 0.8,
+      duration: 1.6, // slower exit
       ease: "easeInOut",
     },
   },
@@ -112,7 +109,7 @@ const imageVariants = {
     y: 0,
     rotateX: 0,
     transition: {
-      duration: 0.55,
+      duration: 1.1, // slower animation
       ease: "easeOut",
     },
   },

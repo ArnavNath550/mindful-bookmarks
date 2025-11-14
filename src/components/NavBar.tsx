@@ -1,11 +1,20 @@
 import * as React from "react";
 import styled from "styled-components";
 
-const NavBar: React.FC = () => {
+type Props = {
+  setPageContext: () => void;
+  pageContext: string;
+};
+
+const NavBar: React.FC = (props: Props) => {
   return (
     <StyledNavBar>
-      <StyledNavItem>Login/Sign up</StyledNavItem>
-      <StyledNavItem>About</StyledNavItem>
+      <StyledNavItem onClick={() => props.setPageContext("LOGIN")}>
+        Login/Sign up
+      </StyledNavItem>
+      <StyledNavItem onClick={() => props.setPageContext("INDEX")}>
+        About
+      </StyledNavItem>
     </StyledNavBar>
   );
 };
